@@ -127,3 +127,11 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+
+# Credentials
+.secrets
+
+# Runtime Variables
+runtime.yaml
+log.txt
