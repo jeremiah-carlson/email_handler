@@ -1,0 +1,13 @@
+@use "1-Base/base-dir" as base;
+@use "2-Layout/layout-dir" as layout;
+@use "3-Module/module-dir" as module;
+@use "4-State/state-dir" as state;
+@use "5-Theme/theme-dir" as theme;
+
+h1:hover {
+  @include state.shift-shrink-right(5px);
+}
+
+h1 {
+  color: theme.$primary;
+}

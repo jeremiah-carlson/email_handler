@@ -24,7 +24,7 @@ from scripts.db import new_pdf_template
 
 print(new_pdf_template('Bob', '', '', 'fhujkshfuwsehfuiwehnfui'))
 
-Path('.')
+PATH_RT = Path(__file__).parent.parent.absolute()
 
 
 log_runtime() # Store current ppid and pid in conf/runtime.yaml
@@ -47,16 +47,17 @@ app.add_middleware(
     allow_headers = configs['cors']['allow_headers'],
 )
 
-app.mount("/static", StaticFiles(directory="static"), name="static")
+app.mount("/static", StaticFiles(directory=PATH_RT / 'static'), name="static")
 templates = Jinja2Templates(directory="static")
 
 @app.get('/')
 async def read_root(): # Redirect root to docs
     return RedirectResponse('/docs')
 
-@app.get('/test')
-async def test(request, Request):
-    return FileResponse('log.txt')
+@app.get('/test1')
+async def test(name: str, response: Response):
+    filename = '%s.html' % name
+    return FileResponse(PATH_RT / 'static' / 'html'/ filename)
 
 
 ### DB Interactions ###
