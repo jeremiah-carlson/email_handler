@@ -10,3 +10,9 @@ class Text_Template(BaseModel):
     template: str
     recipient: str
     params: List[str]
+
+class Pdf_Template(BaseModel):
+    name: str
+    description: str
+    parameters: str
+    full_text: str
