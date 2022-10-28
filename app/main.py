@@ -19,10 +19,10 @@ from scripts.setup import \
 from scripts.struct import Basic_Mail, Text_Template, Pdf_Template
 from scripts.auth import auth
 from scripts.mail import send_basic_mail, send_template_mail
+from scripts.pdf_engine import compile_from_tex
 
-from scripts.db import new_pdf_template
+#from scripts.db import new_pdf_template
 
-print(new_pdf_template('Bob', '', '', 'fhujkshfuwsehfuiwehnfui'))
 
 PATH_RT = Path(__file__).parent.parent.absolute()
 
@@ -59,7 +59,7 @@ async def test(name: str, response: Response):
     filename = '%s.html' % name
     return FileResponse(PATH_RT / 'static' / 'html'/ filename)
 
-
+'''
 ### DB Interactions ###
 @app.post('/template/new')
 async def post_template(payload: Pdf_Template,  request: Request, response: Response):
@@ -69,7 +69,7 @@ async def post_template(payload: Pdf_Template,  request: Request, response: Resp
     else:
         response.status_code = 401
         return 'Unauthorized'
-
+'''
 
 
 ### --- --- ###
