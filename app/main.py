@@ -16,10 +16,10 @@ from scripts.setup import \
     app_desc, configs, meta_tags,\
      log_runtime, secrets
 
-from scripts.struct import Basic_Mail, Text_Template, Pdf_Template
+from scripts.struct import Basic_Mail, Text_Template, Pdf_Template, Latex_Template, Mail_Latex_Template
 from scripts.auth import auth
-from scripts.mail import send_basic_mail, send_template_mail
-from scripts.pdf_engine import compile_from_tex
+from scripts.mail import send_basic_mail, send_template_mail, send_pdf_email
+from scripts.pdf_engine import compile_from_tex, refresh_tex_env, write_tex_template
 
 #from scripts.db import new_pdf_template
 
@@ -28,6 +28,9 @@ PATH_RT = Path(__file__).parent.parent.absolute()
 
 
 log_runtime() # Store current ppid and pid in conf/runtime.yaml
+
+#print(write_tex_template('blank', {'name': 'Tony Hawk'}))
+
 
 app = FastAPI(
     title = 'Email Handler',
@@ -58,6 +61,17 @@ async def read_root(): # Redirect root to docs
 async def test(name: str, response: Response):
     filename = '%s.html' % name
     return FileResponse(PATH_RT / 'static' / 'html'/ filename)
+
+@app.post('/template/pdf')
+async def download_template(payload: Latex_Template, request: Request, response: Response):
+    if auth('basic', request.headers.get('x-api-key')):
+        print(payload.params)
+        pdf_path = write_tex_template(payload.template, payload.params)
+        response.status_code = 200
+        return FileResponse(pdf_path)
+    else:
+        response.status_code = 401
+        return 'Unauthorized'
 
 '''
 ### DB Interactions ###
@@ -92,6 +106,17 @@ async def send_mail(payload: Text_Template, request: Request, response: Response
         response.status_code = 200
         send_template_mail(*payload.__dict__.values())
         return payload.__dict__
+    else:
+        response.status_code = 401
+        return 'Unauthorized'
+
+@app.post('/mail/pdf', tags=['Basic_Mail'])
+async def send_mail(payload: Mail_Latex_Template, request: Request, response: Response):
+    if auth('basic', request.headers.get('x-api-key')):
+        pdf_path = write_tex_template(payload.template, payload.params)
+        send_pdf_email(payload.subject, payload.recipient, payload.body, pdf_path)
+        response.status_code = 200
+        return 'Ok'
     else:
         response.status_code = 401
         return 'Unauthorized'

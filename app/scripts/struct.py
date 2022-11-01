@@ -1,4 +1,4 @@
-from typing import Iterable, List
+from typing import Dict, Iterable, List
 from pydantic import BaseModel
 
 class Basic_Mail(BaseModel):
@@ -16,3 +16,14 @@ class Pdf_Template(BaseModel):
     description: str
     parameters: str
     full_text: str
+
+class Latex_Template(BaseModel):
+    template: str
+    params: Dict
+
+class Mail_Latex_Template(BaseModel):
+    template: str
+    params: dict
+    subject: str
+    recipient: str
+    body: str
